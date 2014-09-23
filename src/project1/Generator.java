@@ -262,7 +262,7 @@ public class Generator {
             timenlink = new int[timenumber][linknumber];
             while ((str = ttin.readLine()) != null) {
                 index++;
-                if (index > 7) {
+                if (index > 7) { // the first eight lines of code are metadata and descriptions
 
                     if ((index - 8) % 29 > 1) {
                         String[] info = str.split(" ");

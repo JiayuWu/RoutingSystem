@@ -3,7 +3,7 @@
 0	% Start period (06:45:00)
 27	% Number of periods
 300	% Seconds per period
-% ID Type Length {
+% ID Type Length { //Type: 1 – freeway, 2 – ramp, 3 – urban road
 %   {Count-0 Time-0} ... {Count-26 Time-26}
 % }
 71738 3 178 {
