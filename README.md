@@ -5,7 +5,6 @@
 
 ToDo:
 1. understand RouteGraph class
-2. figure out what are Untitled1&2
-3. figure out what is lft_i.out used for
-4. maybe create a map visualization of the network
-5. understand the processes in Generator.java
+2. figure out what is lft_i.out used for
+3. understand the processes in Generator.java
+4. explore the full project
