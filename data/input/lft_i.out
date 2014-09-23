@@ -3,9 +3,9 @@
 0	% Start period (06:45:00)
 27	% Number of periods
 300	% Seconds per period
-% ID Type Length { //Type: 1 – freeway, 2 – ramp, 3 – urban road
-%   {Count-0 Time-0} ... {Count-26 Time-26}
-% }
+% ID Type Length(in feet) { //Type: 1 – freeway, 2 – ramp, 3 – urban road.  Length: calculated from the nodes coordinates
+%   {Count-0 Time-0} ... {Count-26 Time-26}   //count stands for traffic flow volume which is the number of vehicles that
+% }                                           //pass a given point on the roadway in a specified period of time
 71738 3 178 {
   { 0 4.2}
   { 0 4.2}
