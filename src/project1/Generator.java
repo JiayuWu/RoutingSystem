@@ -260,7 +260,7 @@ public class Generator {
 
             //Third file
             index = 0;
-            int count = 0;
+            int count = 0;//number of links in the file
 
             strTime = new String[linknumber][timenumber];
             timenlink = new int[timenumber][linknumber];
@@ -269,11 +269,16 @@ public class Generator {
                 if (index > 8) { // the first eight lines of code are metadata and descriptions
 
                     if ((index - 8) % 29 > 1) {
-                        String[] info = str.split(" ");
-                        String[] info1 = info[4].split("}");
+                        //the line is in the format of "  { 0 4.2}"
+                        String[] info = str.split(" "); // the first two elements in the array are just " "
+                        String[] info1 = info[4].split("}"); //info[4] is "4.2}"
                         strTime[(index - 8) / 29][count] = info1[0];
                         count++;
+
                     }
+
+                    //count is in a range of [0,27]
+                    //strTime = new String[linknumber][timenumber]; --- timenumber is in the range of [0,26]
                     if ((index - 8) % 29 == 0) {
                         count = 0;
                     }
