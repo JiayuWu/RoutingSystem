@@ -130,13 +130,7 @@ public class Generator {
         try {
             BufferedReader nodein = new BufferedReader(new FileReader(nodeFileName));
             BufferedReader linkin = new BufferedReader(new FileReader(linkFileName));
-            BufferedReader ttin = new BufferedReader(new FileReader(TTFileName));
             String str;
-            int linknumber = 0;
-            int timenumber = 27;
-
-            String[][] strTime = null;
-            String[][] strTime1 = null;
 
             int index = -1;  //first line is header in text
             while ((str = nodein.readLine()) != null) {
@@ -179,14 +173,36 @@ public class Generator {
             }
 
             links = (Link[]) linklist.toArray(new Link[0]);
-            linknumber = linklist.size();
 
-            //Third file
-            index = 0;
+            //Third File
+            readTimeInASCII(TTFileName);
+
+
+            nodein.close();
+            linkin.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //Read file lft_i.out
+    //Prerequisite: Links already readin
+    //Result: time data read into timenlink[][] as integers (e.g. 4.2 --> 5)
+    private void readTimeInASCII(String TTFileName){
+        try {
+            BufferedReader ttin = new BufferedReader(new FileReader(TTFileName));
+
+            int timenumber = 27;
+            int linknumber = links.length;
+
+            String str;
+            String[][] strTime = new String[linknumber][timenumber];//store info such as 4.2
+
+            int index = 0;
             int count = 0;//number of links in the file
 
-            strTime = new String[linknumber][timenumber];//store info such as 4.2
             timenlink = new int[timenumber][linknumber]; //info 4.2 will be stored as 5
+
             while ((str = ttin.readLine()) != null) {
                 index++;
                 if (index > 8) { // the first eight lines of code are metadata and descriptions
@@ -197,16 +213,15 @@ public class Generator {
                         String[] info1 = info[4].split("}"); //info[4] is "4.2}"
                         strTime[(index - 8) / 29][count] = info1[0];
                         count++;
-
                     }
 
                     //count is in a range of [0,27]
-
                     if ((index - 8) % 29 == 0) {
                         count = 0;
                     }
                 }
             }
+
             //Matrix transform
             for (int i = 0; i < linknumber; i++) {
                 for (int j = 0; j < timenumber; j++) {
@@ -214,13 +229,11 @@ public class Generator {
 //                    System.out.print(strTime[i][j]+ "&" + i + "&" + j);
                     double traveltime = Double.parseDouble(strTime[i][j]);
                     timenlink[j][i] = (int) (traveltime) + 1;
-
                 }
             }
 
-            nodein.close();
-            linkin.close();
             ttin.close();
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -237,7 +250,6 @@ public class Generator {
             double distoDesX = odPair[1].nodeX - nodes[i].nodeX;
             double distoDesY = odPair[1].nodeY - nodes[i].nodeY;
             if (distoOriginX > threshold || distoOriginY > threshold) ;
-//                continue;
             else {  //withinBbox of origin
                 double disx = nodes[i].nodeX - odPair[0].nodeX;
                 double disy = nodes[i].nodeY - odPair[0].nodeY;
