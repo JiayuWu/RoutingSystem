@@ -1,8 +1,5 @@
 package project1;
 
-import java.awt.Color;
-import java.awt.geom.Rectangle2D;
-
 import java.io.BufferedReader;
 
 import java.io.FileInputStream;
@@ -18,71 +15,29 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 
-import org.rollerjm.graph.IGraph;
-
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-
-import org.rollerjm.graph.AdjacencyMatrixGraph;
 import org.rollerjm.graph.Path;
 import org.rollerjm.graph.PathFinder;
 
-import java.awt.Color;
-import java.awt.geom.Rectangle2D;
-
-import java.io.BufferedReader;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
-import java.io.FileWriter;
-import java.io.IOException;
-
-import java.io.ObjectInputStream;
-
-import java.io.Serializable;
-
-import java.util.ArrayList;
-
 //import IGraph;
 
-import java.util.Vector;
-
-import javax.swing.BorderFactory;
-
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 
 //import AdjacencyMatrixGraph;
 //import Path;
 //import PathFinder;
 
 public class Generator {
-    //    public String dataFolder = "C:\\jdevstudio10131\\jdev\\mywork\\RouteCalculator\\Project1\\data\\";
-    //  public String dataFolder = "";         // for java run on grid
-    // public String cellfile = "GraphCell.txt";
-    //    public String timestampfile = "dummyTest.arrays";  // dummy test for Grid
-    //public String timestampfile = "output21.arrays";
+
     public int nodeNum = 0;
-    //ArrayList linkWeights;
-    //int[][] allLinks;
-    int[][] timenlink = null;
+
+    int[][] timenlink = null;//used to store lft_i.out info as [time period index][weight rounded to int]
     Link[] links = null;
     Node[] nodes = null;
 
     public Generator() {
-        //graphGenerator = new GraphGenerator();
 
-        //nodeNum = graphGenerator.drawGraph(dataFolder + cellfile, dataFolder + imageURL);
-        //readNodeLinkTimeInBinary(dataFolder + timestampfile);
         long startt = System.currentTimeMillis();
         Node[] odPair = readOD("data/input/OD.txt");
-        readNodeLinkTimeinASCII("data/input/Nodes.txt", "data/input/Links.txt", "data/input/lft_i.out");
+        readNodeLinkTimeInASCII("data/input/Nodes.txt", "data/input/Links.txt", "data/input/lft_i.out");
         int threshold = 100; // in meter
         String[] closetODIds = getClosestOD(threshold, odPair);
         String shortestPath = getRouting(3, closetODIds[0], closetODIds[1]);
@@ -144,31 +99,6 @@ public class Generator {
         return routeresult;
     }
 
-    /**
-     * construct model for path calculation *
-     */
-    public void readNodeLinkTimeInBinary(String travelTimeFile) {
-        try {
-            /**  test: read from output (arrays) **/
-            FileInputStream fis = new FileInputStream(travelTimeFile);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            Object obj = ois.readObject();
-            nodes = (Node[]) obj;
-            nodeNum = nodes.length;
-            Object obj2 = ois.readObject();
-            links = (Link[]) obj2;
-
-            Object obj3 = ois.readObject();
-            timenlink = (int[][]) obj3;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
     public Node[] readOD(String odFileName) {
         Node[] od = new Node[2];
         String str = null;
@@ -195,7 +125,7 @@ public class Generator {
         return od;
     }
 
-    public void readNodeLinkTimeinASCII(String nodeFileName, String linkFileName, String TTFileName) {
+    public void readNodeLinkTimeInASCII(String nodeFileName, String linkFileName, String TTFileName) {
 
         try {
             BufferedReader nodein = new BufferedReader(new FileReader(nodeFileName));
@@ -204,16 +134,12 @@ public class Generator {
             String str;
             int linknumber = 0;
             int timenumber = 27;
-//        nodes=new Node[598];
-//        links=new Link[1938];
+
             String[][] strTime = null;
             String[][] strTime1 = null;
-//        strTime=new String[linknumber][timenumber];
-            //strTime1=new String[timenumber][linknumber];
-//        timenlink = new int[timenumber][linknumber];
+
             int index = -1;  //first line is header in text
             while ((str = nodein.readLine()) != null) {
-//         else if(index==-1) continue;
                 if (index == -1) {
                     String[] nodeinfo = str.split(":");
                     nodeNum = Integer.valueOf(nodeinfo[1]).intValue();
@@ -238,9 +164,7 @@ public class Generator {
             ArrayList linklist = new ArrayList();
             while ((str = linkin.readLine()) != null) {
                 if (index == -1) {
-//             String[] linkinfo=str.split(":"); 
-//             linknumber = Integer.valueOf(linkinfo[1]).intValue();
-//             links = new Link[linknumber];
+
                 } else {
                     String[] linkinfo = str.split(",");
                     if (linkinfo.length > 1) {  // not empty line
@@ -249,7 +173,6 @@ public class Generator {
                         thelink.fromNodeID = linkinfo[1];
                         thelink.toNodeID = linkinfo[2];
                         linklist.add(thelink);
-//                 links[index]=thelink;
                     }
                 }
                 index++;
@@ -262,8 +185,8 @@ public class Generator {
             index = 0;
             int count = 0;//number of links in the file
 
-            strTime = new String[linknumber][timenumber];
-            timenlink = new int[timenumber][linknumber];
+            strTime = new String[linknumber][timenumber];//store info such as 4.2
+            timenlink = new int[timenumber][linknumber]; //info 4.2 will be stored as 5
             while ((str = ttin.readLine()) != null) {
                 index++;
                 if (index > 8) { // the first eight lines of code are metadata and descriptions
@@ -278,7 +201,7 @@ public class Generator {
                     }
 
                     //count is in a range of [0,27]
-                    //strTime = new String[linknumber][timenumber]; --- timenumber is in the range of [0,26]
+
                     if ((index - 8) % 29 == 0) {
                         count = 0;
                     }
@@ -291,6 +214,7 @@ public class Generator {
 //                    System.out.print(strTime[i][j]+ "&" + i + "&" + j);
                     double traveltime = Double.parseDouble(strTime[i][j]);
                     timenlink[j][i] = (int) (traveltime) + 1;
+
                 }
             }
 
@@ -341,6 +265,33 @@ public class Generator {
     public static void main(String[] args) {
         Generator bfileGenerator = new Generator();
 
+    }
+
+    //Unused methods
+
+    /**
+     * construct model for path calculation *
+     */
+    public void readNodeLinkTimeInBinary(String travelTimeFile) {
+        try {
+            /**  test: read from output (arrays) **/
+            FileInputStream fis = new FileInputStream(travelTimeFile);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Object obj = ois.readObject();
+            nodes = (Node[]) obj;
+            nodeNum = nodes.length;
+            Object obj2 = ois.readObject();
+            links = (Link[]) obj2;
+
+            Object obj3 = ois.readObject();
+            timenlink = (int[][]) obj3;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }
