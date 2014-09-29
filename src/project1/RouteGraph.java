@@ -6,10 +6,10 @@ import org.rollerjm.graph.Path;
 
 public class RouteGraph {
 
-    public RouteGraph(int numberVertices, int numberTimeIntervals, Node[] nodes) {
-        graph = new AdjacencyMatrixGraph(numberVertices, numberTimeIntervals);
-        for (int i = 0; i < numberVertices; i++) {
-            //graph.addVertex( String.valueOf(i+1) );
+    // Note: numberOfNodes = nodes.length
+    public RouteGraph(int numberOfNodes, int numberOfTimeIntervals, Node[] nodes) {
+        graph = new AdjacencyMatrixGraph(numberOfNodes, numberOfTimeIntervals);
+        for (int i = 0; i < numberOfNodes; i++) {
             graph.addVertex(nodes[i].nodeID);
         }
     }

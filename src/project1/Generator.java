@@ -125,6 +125,8 @@ public class Generator {
         }
         //set link weight to each link
         RouteGraph rgraph = new RouteGraph(nodeNum, timenlink.length, nodes);
+        //System.out.println(nodes.length);
+
         //LetterGraphBuilder lgraph = new LetterGraphBuilder(nodeNum, allLinks.length);
         for (int i = 0; i < timenlink.length; i++) {
             for (int j = 0; j < linkNum; j++) {
@@ -230,6 +232,8 @@ public class Generator {
             }
 
 
+
+
             index = -1; //first line is text
             ArrayList linklist = new ArrayList();
             while ((str = linkin.readLine()) != null) {
@@ -262,7 +266,7 @@ public class Generator {
             timenlink = new int[timenumber][linknumber];
             while ((str = ttin.readLine()) != null) {
                 index++;
-                if (index > 7) { // the first eight lines of code are metadata and descriptions
+                if (index > 8) { // the first eight lines of code are metadata and descriptions
 
                     if ((index - 8) % 29 > 1) {
                         String[] info = str.split(" ");
@@ -331,6 +335,7 @@ public class Generator {
 
     public static void main(String[] args) {
         Generator bfileGenerator = new Generator();
+
     }
 
 }
