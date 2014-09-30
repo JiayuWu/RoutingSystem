@@ -154,14 +154,12 @@ public class Generator {
 
 
 
-            index = -1; //first line is text
+            index = -1; // igore first line --- "[links]:1292"
             ArrayList linklist = new ArrayList();
             while ((str = linkin.readLine()) != null) {
-                if (index == -1) {
-
-                } else {
-                    String[] linkinfo = str.split(",");
-                    if (linkinfo.length > 1) {  // not empty line
+                if (index != -1) {
+                    String[] linkinfo = str.split(","); //e.g. 71738,6520,6383 -- link id, from node id, to node id
+                    if (linkinfo.length == 3) {  // make sure the line is correct
                         Link thelink = new Link();
                         thelink.linkID = linkinfo[0];
                         thelink.fromNodeID = linkinfo[1];
@@ -172,7 +170,7 @@ public class Generator {
                 index++;
             }
 
-            links = (Link[]) linklist.toArray(new Link[0]);
+            links = (Link[]) linklist.toArray(new Link[0]);//new Link[0]
 
             //Third File
             readTimeInASCII(TTFileName);
